@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<AssemblyName>Executor</AssemblyName>
+		<TargetFramework>net9.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+		<AssemblyName>Executor</AssemblyName>
+		<PublishAot>true</PublishAot>
+		<InvariantGlobalization>true</InvariantGlobalization>
+
+		<Version>1.0.0</Version>
+		<Authors>Matheus Leal</Authors>
+		<Company>MAtheus Leal</Company>
+		<Product>Executor CLI Tool</Product>
+		<Description>A powerful CLI tool for managing automated tasks.</Description>
+		<PackageTags>cli;automation;executor</PackageTags>
+		<RepositoryUrl>https://github.com/MatheusLeal/executor</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageProjectUrl>https://myprojectsite.com</PackageProjectUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<Copyright>© 2025 Matheus Leal</Copyright>
+
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<BuildDate>$(MSBuildThisFileModifiedTime)</BuildDate>
+		<CliMode>Production</CliMode>
+	</PropertyGroup>
+
+</Project>

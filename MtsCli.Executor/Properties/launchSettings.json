@@ -1,0 +1,26 @@
+{
+  "profiles": {
+    "Executor": {
+      "commandName": "Project"
+    },
+    "Executor list": {
+      "commandName": "Project",
+      "commandLineArgs": "list"
+    },
+    "Executor rm": {
+      "commandName": "Project",
+      "commandLineArgs": "rm -v true -directories bin;obj;node_modules -path \"D:\\_projects\\workspaces\\DevOps\" "
+    },
+    "Executor dotnet-clean help": {
+      "commandName": "Project",
+      "commandLineArgs": "dotnet-clean -help "
+    },
+    "Executor force error": {
+      "commandName": "Project",
+      "commandLineArgs": "xaribou "
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}
