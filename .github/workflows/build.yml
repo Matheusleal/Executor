@@ -31,7 +31,7 @@ jobs:
         dotnet-version: '9.0.x'
 
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore -r ${{ matrix.rid }}
 
     - name: Build
       run: dotnet build --configuration Release --no-restore -r ${{ matrix.rid }}
