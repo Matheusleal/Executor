@@ -40,7 +40,9 @@ jobs:
         DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: true
 
     - name: Upload Artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4.6.2
       with:
         name: mts-cli-${{ matrix.rid }}
         path: ./MtsCli.Executor/bin/Release/net9.0/${{ matrix.rid }}/publish/
+
+    
