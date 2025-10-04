@@ -1,5 +1,6 @@
 ﻿using MtsCli.Executor.CliLib;
 using MtsCli.Executor.Extensions;
+using MtsCli.Executor.Helpers;
 
 namespace MtsCli.Executor.Commands;
 public class DirectoryRemover : CommandSync
@@ -51,7 +52,7 @@ public class DirectoryRemover : CommandSync
                 .ForEach(dir =>
                     {
                         if (verbose)
-                            Console.WriteLine($"Deleting: {dir}");
+                            Printer.Print($"Deleting: {dir}", ConsoleColor.Gray);
 
                         Directory.Delete(dir, true);
                     });

@@ -18,6 +18,17 @@ public static class Printer
         Console.ForegroundColor = previousColor;
     }
 
+    public static void PrintWithLabel(string label, string message, ConsoleColor labelColor = ConsoleColor.Gray, ConsoleColor messageColor = ConsoleColor.Green)
+    {
+        PrintInline(label, labelColor);
+        Print(message, messageColor);
+    }
+
+    public static void BreakLine()
+    {
+        Console.WriteLine();
+    }
+
     public static void PrintTable(IEnumerable<string[]> rows)
     {
         if (rows == null || !rows.Any())

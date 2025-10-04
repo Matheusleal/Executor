@@ -1,4 +1,6 @@
-﻿using MtsCli.Executor.CliLib;
+﻿using System.Reflection;
+
+using MtsCli.Executor.CliLib;
 using MtsCli.Executor.Helpers;
 
 
@@ -22,8 +24,7 @@ static async Task Run(string[] arguments)
         var commands = Commander.LoadCommands();
         var parsedCommand = commands.Parse(arguments);
 
-        Printer.PrintInline($"Running command: ", ConsoleColor.Yellow);
-        Printer.Print(parsedCommand.Command.Name, ConsoleColor.Green);
+        Printer.PrintWithLabel("Running command: ", parsedCommand.Command.Name, ConsoleColor.Yellow, ConsoleColor.Green);
 
         // Special case for "list" command to show arguments without executing
         if (parsedCommand.Command.Flag == "list")
@@ -68,12 +69,18 @@ static void PrintListOfCommands(List<CommandBase> commands)
 
 static void PrintStartupMessage(DateTime startTime)
 {
+    var assembly = Assembly.GetExecutingAssembly();
+    var version = assembly.GetName().Version?.ToString(3) ?? "no-version";
+    var createdBy = assembly.GetCustomAttribute<AssemblyCompanyAttribute>()?.Company ?? "Unknown";
+
     Console.Clear();
     Printer.Print("========================================", ConsoleColor.DarkGray);
     Printer.Print("            EXECUTOR CLI TOOL           ", ConsoleColor.Cyan);
     Printer.Print("========================================", ConsoleColor.DarkGray);
-    Printer.Print($"Version: 1.0.0", ConsoleColor.Gray);
-    Printer.Print($"Started at: {startTime:yyyy/MM/dd HH:mm:ss}", ConsoleColor.Gray);
+    Printer.PrintWithLabel("Version: ", version);
+    Printer.PrintWithLabel("Created by: ", createdBy);
+    Printer.BreakLine();
+    Printer.PrintWithLabel("Starting at: ", $"{DateTime.Now:yyyy/MM/dd HH:mm:ss}");
     Printer.Print("run 'executor list' to see available commands", ConsoleColor.Gray);
     Printer.Print("----------------------------------------", ConsoleColor.DarkGray);
 }
