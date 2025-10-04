@@ -51,6 +51,8 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: write
     steps:
       - name: Download all artifacts
         uses: actions/download-artifact@v4.1.7
@@ -58,6 +60,7 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v2.0.6
         with:
+          generate_release_notes: true
           files: |
             mts-cli-win-x64/*
             mts-cli-linux-x64/*
