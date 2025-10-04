@@ -35,7 +35,7 @@ jobs:
       run: dotnet build --configuration Release --no-restore
 
     - name: Publish
-      run: dotnet publish ./MtsCli.Executor/MtsCli.Executor.csproj --configuration Release --no-build -p:PublishAot=true -p:PublishSingleFile=true --self-contained true -r ${{ matrix.rid }}
+      run: dotnet publish ./MtsCli.Executor/MtsCli.Executor.csproj --configuration Release --no-build -p:PublishAot=true -p:PublishSingleFile=true --self-contained true -r ${{ matrix.rid }} -f net9.0 -o ./MtsCli.Executor/bin/Release/net9.0/${{ matrix.rid }}/publish/
       env:
         DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: true
 
