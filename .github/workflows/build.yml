@@ -41,11 +41,28 @@ jobs:
       env:
         DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: true
 
+    - name: Archive Artifacts (Linux/macOS)
+      if: runner.os != 'Windows'
+      run: |
+        cd ./MtsCli.Executor/bin/Release/net9.0/${{ matrix.rid }}/publish/
+        tar -czvf ../../../../../../mts-cli-${{ matrix.rid }}.tar.gz .
+      shell: bash
+
+    - name: Archive Artifacts (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        $artifactDir = "./MtsCli.Executor/bin/Release/net9.0/${{ matrix.rid }}/publish"
+        $archivePath = "./mts-cli-${{ matrix.rid }}.zip"
+        Compress-Archive -Path "$artifactDir/*" -DestinationPath $archivePath
+      shell: pwsh
+
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4.6.2
       with:
-        name: mts-cli-${{ matrix.rid }}
-        path: ./MtsCli.Executor/bin/Release/net9.0/${{ matrix.rid }}/publish/
+        name: release-artifacts
+        path: |
+          mts-cli-*.tar.gz
+          mts-cli-*.zip
 
   release:
     needs: build
@@ -56,15 +73,14 @@ jobs:
     steps:
       - name: Download all artifacts
         uses: actions/download-artifact@v4.1.7
+        with:
+          name: release-artifacts
 
       - name: Release
         uses: softprops/action-gh-release@v2.0.6
         with:
           generate_release_notes: true
           files: |
-            mts-cli-win-x64/Executor.exe
-            mts-cli-win-x64/Executor.pdb
-            mts-cli-linux-x64/Executor
-            mts-cli-linux-x64/Executor.dbg
-            mts-cli-osx-x64/Executor
+            *.tar.gz
+            *.zip
 
