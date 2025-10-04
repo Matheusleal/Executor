@@ -31,10 +31,10 @@ jobs:
         dotnet-version: '9.0.x'
 
     - name: Restore dependencies
-      run: dotnet restore -r ${{ matrix.rid }}
+      run: dotnet restore ./MtsCli.Executor/MtsCli.Executor.csproj -r ${{ matrix.rid }}
 
     - name: Build
-      run: dotnet build --configuration Release --no-restore -r ${{ matrix.rid }}
+      run: dotnet build ./MtsCli.Executor/MtsCli.Executor.csproj --configuration Release --no-restore -r ${{ matrix.rid }}
 
     - name: Publish
       run: dotnet publish ./MtsCli.Executor/MtsCli.Executor.csproj --configuration Release --no-build -p:PublishSingleFile=true --self-contained true -r ${{ matrix.rid }} -f net9.0 -o ./MtsCli.Executor/bin/Release/net9.0/${{ matrix.rid }}/publish/
