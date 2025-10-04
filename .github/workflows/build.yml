@@ -57,6 +57,9 @@ jobs:
       - name: Download all artifacts
         uses: actions/download-artifact@v4.1.7
 
+      - name: Debug file structure
+        run: ls -R
+
       - name: Release
         uses: softprops/action-gh-release@v2.0.6
         with:
