@@ -8,10 +8,11 @@
 		<Nullable>disable</Nullable>
 		<PublishAot>true</PublishAot>
 		<InvariantGlobalization>true</InvariantGlobalization>
+		<RuntimeIdentifiers>win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
 
 		<Version>1.0.0</Version>
 		<Authors>Matheus Leal</Authors>
-		<Company>MAtheus Leal</Company>
+		<Company>Matheus Leal</Company>
 		<Product>Executor CLI Tool</Product>
 		<Description>A powerful CLI tool for managing automated tasks.</Description>
 		<PackageTags>cli;automation;executor</PackageTags>
