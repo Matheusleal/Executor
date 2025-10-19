@@ -23,6 +23,10 @@
       "commandName": "Project",
       "commandLineArgs": "pd"
     },
+    "Executor pd2": {
+      "commandName": "Project",
+      "commandLineArgs": "pd2"
+    },
     "Container (Dockerfile)": {
       "commandName": "Docker"
     }
