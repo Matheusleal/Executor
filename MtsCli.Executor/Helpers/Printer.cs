@@ -2,6 +2,8 @@
 
 public static class Printer
 {
+    public static ConsoleColor DefaultColor => Console.ForegroundColor;
+
     public static void Print(string message, ConsoleColor color)
     {
         var previousColor = Console.ForegroundColor;
@@ -37,7 +39,7 @@ public static class Printer
             return;
         }
 
-        // Set the max length by column
+        int windowWidth = Console.WindowWidth - 1;
         int columnCount = rows.Max(r => r.Length);
         int[] columnWidths = new int[columnCount];
 
@@ -51,6 +53,15 @@ public static class Printer
             }
         }
 
+        int totalWidth = columnWidths.Sum() + (3 * columnCount) + 1;
+
+        if (totalWidth > windowWidth)
+        {
+            double ratio = (double)(windowWidth - (3 * columnCount) - 1) / columnWidths.Sum();
+            for (int i = 0; i < columnWidths.Length; i++)
+                columnWidths[i] = Math.Max(5, (int)(columnWidths[i] * ratio)); // mínimo 5 chars
+        }
+
         string separator = "+" + string.Join("+", columnWidths.Select(w => new string('-', w + 2))) + "+";
 
         Print(separator, ConsoleColor.DarkGray);
@@ -58,22 +69,44 @@ public static class Printer
 
         foreach (var row in rows)
         {
-            string line = "|";
+            List<string[]> wrappedCells = new();
+            int maxLines = 1;
+
             for (int i = 0; i < columnCount; i++)
             {
-                string cell = i < row.Length ? row[i] : "";
-                line += " " + cell.PadRight(columnWidths[i]) + " |";
+                string cell = i < row.Length ? row[i] ?? "" : "";
+                var wrapped = SplitToLines(cell, columnWidths[i]).ToArray();
+                wrappedCells.Add(wrapped);
+                if (wrapped.Length > maxLines)
+                    maxLines = wrapped.Length;
             }
 
-            Print(line, isHeader ? ConsoleColor.Cyan : ConsoleColor.Gray);
-
-            if (isHeader)
+            for (int lineIndex = 0; lineIndex < maxLines; lineIndex++)
             {
-                Print(separator, ConsoleColor.DarkGray);
-                isHeader = false;
-            }
-        }
+                string line = "|";
+                for (int i = 0; i < columnCount; i++)
+                {
+                    string cellLine = lineIndex < wrappedCells[i].Length ? wrappedCells[i][lineIndex] : "";
+                    line += " " + cellLine.PadRight(columnWidths[i]) + " |";
+                }
 
-        Print(separator, ConsoleColor.DarkGray);
+                Print(line, isHeader ? ConsoleColor.Cyan : ConsoleColor.Gray);
+            }
+
+            Print(separator, ConsoleColor.DarkGray);
+            if (isHeader)
+                isHeader = false;
+        }
+    }
+
+    private static IEnumerable<string> SplitToLines(string text, int maxWidth)
+    {
+        if (string.IsNullOrEmpty(text))
+            yield return "";
+        else
+        {
+            for (int i = 0; i < text.Length; i += maxWidth)
+                yield return text.Substring(i, Math.Min(maxWidth, text.Length - i));
+        }
     }
 }
