@@ -27,4 +27,8 @@
 		<CliMode>Production</CliMode>
 	</PropertyGroup>
 
+	<ItemGroup>
+	  <PackageReference Include="Spectre.Console.Cli" Version="0.55.0" />
+	</ItemGroup>
+
 </Project>

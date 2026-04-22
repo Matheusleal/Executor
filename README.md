@@ -1,76 +1,66 @@
 # MtsCli Executor
 
-MtsCli Executor is a command-line interface (CLI) tool designed for extensibility. It allows developers to add new commands by simply creating new classes. The tool automatically discovers and integrates new commands at runtime.
+MtsCli Executor is a command-line interface (CLI) tool built with [Spectre.Console.Cli](https://spectreconsole.net/cli/). It is designed for extensibility, allowing developers to add new commands by creating new classes and registering them in the application configuration.
 
 ## How it Works
 
-The core of the MtsCli Executor is the `Commander` class, which handles the discovery, parsing, and execution of commands.
+The tool uses Spectre.Console.Cli to handle command-line argument parsing, command discovery (via registration), and help generation.
 
-- **Command Discovery**: On startup, the `Commander` scans the application's assemblies for any classes that inherit from `CommandBase`. This allows for a modular architecture where commands can be added or removed without changing the core application logic.
-- **Command Parsing**: The `Commander` parses the command-line arguments to identify the requested command and its options.
-- **Command Execution**: Once the command is identified, the `Commander` executes it, passing along any provided options. The tool supports both synchronous and asynchronous commands.
+- **Command Registration**: Commands are registered in `Program.cs` using the `CommandApp.Configure` method.
+- **Strongly-typed Settings**: Each command has a corresponding `CommandSettings` class that defines its options and arguments with attributes.
+- **Rich Output**: Integrated with [Spectre.Console](https://spectreconsole.net/) for beautiful terminal output, including tables, colors, and exceptions.
 
 ## How to Add a New Command
 
 Adding a new command is straightforward. Follow these steps:
 
-1.  **Create a new class** in the `MtsCli.Executor/Commands` directory. The name of the file should be descriptive of the command's function (e.g., `MyNewCommand.cs`).
+1.  **Create a new class** in the `MtsCli.Executor/Commands` directory. The name of the file should be descriptive of the command followed by `Command.cs` (e.g., `MyNewCommand.cs`).
 
-2.  **Inherit from `CommandSync` or `CommandAsync`**.
-    - Use `CommandSync` for synchronous operations.
-    - Use `CommandAsync` for asynchronous operations.
+2.  **Define a Settings class** inheriting from `CommandSettings` inside your command class. Use `[CommandOption]` and `[CommandArgument]` attributes.
 
-3.  **Implement the abstract properties**:
-    - `Name`: A user-friendly name for the command.
-    - `Flag`: The long-form flag for the command (e.g., `my-new-command`).
-    - `ShortFlag`: A short-form flag for the command (e.g., `mnc`).
-    - `Description`: A brief description of what the command does.
-    - `Options`: A list of `Option` objects that the command accepts.
+3.  **Inherit from `Command<TSettings>`** (or `AsyncCommand<TSettings>`).
 
-4.  **Implement the `Execute` or `ExecuteAsync` method**:
-    - This method contains the logic for your command.
-    - It receives a `CommandInput` object, which contains the arguments passed to the command.
+4.  **Implement the `Execute` method** (or `ExecuteAsync`).
+
+5.  **Register the command** in `Program.cs`.
 
 ### Example: A Simple "Hello World" Command
-
-Here is an example of a simple command that prints a greeting.
 
 **File**: `MtsCli.Executor/Commands/HelloWorldCommand.cs`
 
 ```csharp
-using MtsCli.Executor.CliLib;
-using MtsCli.Executor.Helpers;
+using System.ComponentModel;
+using Spectre.Console;
+using Spectre.Console.Cli;
 
 namespace MtsCli.Executor.Commands;
 
-public class HelloWorldCommand : CommandSync
+public sealed class HelloWorldCommand : Command<HelloWorldCommand.Settings>
 {
-    public override string Name => "Hello World";
-    public override string Flag => "hello";
-    public override string ShortFlag => "h";
-    public override string Description => "Prints a greeting.";
-    public override List<Option> Options =>
-    [
-        new Option(
-            Name: "name",
-            ShortName: "n",
-            Description: "The name to greet.",
-            IsRequired: true)
-    ];
-
-    public override CommandOutput Execute(CommandInput input)
+    public sealed class Settings : CommandSettings
     {
-        if (ShouldPrintHelpAndExit(input))
-        {
-            return new CommandOutput(0, "", "");
-        }
+        [Description("The name to greet.")]
+        [CommandOption("-n|--name")]
+        [DefaultValue("World")]
+        public string Name { get; set; }
+    }
 
-        var name = input.Arguments.GetValueOrDefault("name", "World");
-        Printer.Print($"Hello, {name}!", ConsoleColor.Green);
-
-        return new CommandOutput(0, "Greeting sent successfully.", "");
+    protected override int Execute(CommandContext context, Settings settings, CancellationToken cancellationToken)
+    {
+        AnsiConsole.MarkupLine($"Hello, [green]{settings.Name}[/]!");
+        return 0;
     }
 }
+```
+
+**Registration in `Program.cs`**:
+
+```csharp
+app.Configure(config =>
+{
+    config.AddCommand<HelloWorldCommand>("hello")
+        .WithDescription("Prints a greeting.");
+});
 ```
 
 ## How to Build and Run
@@ -81,15 +71,15 @@ public class HelloWorldCommand : CommandSync
     ```
 
 2.  **Run the application**:
-    - To see a list of available commands:
+    - To see the help menu and available commands:
       ```bash
-      dotnet run --project MtsCli.Executor/MtsCli.Executor.csproj -- list
+      dotnet run --project MtsCli.Executor/MtsCli.Executor.csproj -- --help
       ```
     - To run a specific command:
       ```bash
-      dotnet run --project MtsCli.Executor/MtsCli.Executor.csproj -- <command_flag> [options]
+      dotnet run --project MtsCli.Executor/MtsCli.Executor.csproj -- <command> [options]
       ```
-      For example, to run the `DirectoryRemover` command:
+      For example, to run the `remove-dir` command:
       ```bash
       dotnet run --project MtsCli.Executor/MtsCli.Executor.csproj -- remove-dir -p "C:\path\to\your\project"
       ```

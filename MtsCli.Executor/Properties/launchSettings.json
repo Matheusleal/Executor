@@ -5,19 +5,19 @@
     },
     "Executor list": {
       "commandName": "Project",
-      "commandLineArgs": "list"
+      "commandLineArgs": "-- --list"
     },
     "Executor rm": {
       "commandName": "Project",
-      "commandLineArgs": "rm -v true -directories bin;obj;node_modules -path \"D:\\_projects\\workspaces\\DevOps\" "
+      "commandLineArgs": "-- --rm -v true -directories bin;obj;node_modules -path \"D:\\_projects\\workspaces\\DevOps\" "
     },
     "Executor dotnet-clean help": {
       "commandName": "Project",
-      "commandLineArgs": "dotnet-clean -help "
+      "commandLineArgs": "-- --dotnet-clean -help "
     },
     "Executor force error": {
       "commandName": "Project",
-      "commandLineArgs": "xaribou "
+      "commandLineArgs": "-- --xaribou "
     },
     "Container (Dockerfile)": {
       "commandName": "Docker"
