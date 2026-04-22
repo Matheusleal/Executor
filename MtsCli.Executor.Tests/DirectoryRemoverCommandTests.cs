@@ -2,7 +2,6 @@ using MtsCli.Executor.Commands;
 using Spectre.Console;
 using Spectre.Console.Cli;
 using Spectre.Console.Testing;
-using Xunit;
 
 namespace MtsCli.Executor.Tests;
 
