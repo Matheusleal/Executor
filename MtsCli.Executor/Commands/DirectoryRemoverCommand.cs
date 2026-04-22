@@ -4,8 +4,19 @@ using Spectre.Console.Cli;
 
 namespace MtsCli.Executor.Commands;
 
-public sealed class DirectoryRemoverCommand : Command<DirectoryRemoverCommand.Settings>
+public class DirectoryRemoverCommand : Command<DirectoryRemoverCommand.Settings>
 {
+    private readonly IAnsiConsole _console;
+
+    public DirectoryRemoverCommand(IAnsiConsole console)
+    {
+        _console = console ?? AnsiConsole.Console;
+    }
+
+    public DirectoryRemoverCommand() : this(null)
+    {
+    }
+
     public sealed class Settings : CommandSettings
     {
         [Description("Path to the root directory of the .NET project")]
@@ -33,7 +44,7 @@ public sealed class DirectoryRemoverCommand : Command<DirectoryRemoverCommand.Se
 
             if (!Directory.Exists(path))
             {
-                AnsiConsole.MarkupLine($"[red]Error:[/] The specified path does not exist: [yellow]{path}[/]");
+                _console.MarkupLine($"[red]Error:[/] The specified path does not exist: [yellow]{path}[/]");
                 return 1;
             }
 
@@ -48,7 +59,7 @@ public sealed class DirectoryRemoverCommand : Command<DirectoryRemoverCommand.Se
             {
                 if (settings.Verbose)
                 {
-                    AnsiConsole.MarkupLine($"[grey]Deleting: {dir}[/]");
+                    _console.MarkupLine($"[grey]Deleting: {dir}[/]");
                 }
 
                 try
@@ -58,22 +69,22 @@ public sealed class DirectoryRemoverCommand : Command<DirectoryRemoverCommand.Se
                 }
                 catch (Exception ex)
                 {
-                    AnsiConsole.MarkupLine($"[red]Failed to delete:[/] [yellow]{dir}[/] - [red]{ex.Message}[/]");
+                    _console.MarkupLine($"[red]Failed to delete:[/] [yellow]{dir}[/] - [red]{ex.Message}[/]");
                     failedCount++;
                 }
 
             }
-            AnsiConsole.MarkupLine($"[green]Deleted {deletedCount} directories.[/]");
+            _console.MarkupLine($"[green]Deleted {deletedCount} directories.[/]");
             
             if (deletedCount > 0)
-                AnsiConsole.MarkupLine($"[red]Failed to delete {failedCount} directories.[/]");
+                _console.MarkupLine($"[red]Failed to delete {failedCount} directories.[/]");
 
-            AnsiConsole.MarkupLine("[green]Cleanup completed successfully.[/]");
+            _console.MarkupLine("[green]Cleanup completed successfully.[/]");
             return 0;
         }
         catch (Exception ex)
         {
-            AnsiConsole.WriteException(ex);
+            _console.WriteException(ex);
             return 1;
         }
     }
